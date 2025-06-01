@@ -52,6 +52,7 @@ sudo systemctl start redis
 ---
 
 ### 2. Backend Setup (FastAPI)
+cd data-transparency-project
 
 cd backend
 
@@ -65,6 +66,8 @@ uvicorn app.main:app --reload
 
 ---
 ### 3. Frontend Setup (React)
+
+cd data-transparency-project
 
 cd frontend
 
