@@ -2,35 +2,7 @@
 
 This project aims to increase transparency and user trust in data-driven insights by **clearly displaying the data source for each data point**. The chat-based interface allows users to query insights, while all returned data includes its source—such as from [data.europa.eu](https://data.europa.eu), [IMF](https://www.imf.org/external/datamapper/api/), or [opendata.swiss](https://opendata.swiss/en/).
 
----
 
-## 🗂 Project Structure
-
-project-root/
-│
-├── backend/
-│ ├── app/
-│ │ ├── main.py # FastAPI entry point
-│ │ ├── api/routes.py # API routing
-│ │ ├── services/
-│ │ │ ├── imf.py # IMF data collector
-│ │ │ ├── europa.py # EU data collector
-│ │ │ └── swiss.py # Swiss open data collector
-│ │ └── cache.py # Redis caching
-│ └── requirements.txt
-│
-├── frontend/
-│ ├── public/
-│ │ └── index.html
-│ └── src/
-│ ├── App.tsx
-│ ├── index.tsx
-│ ├── components/
-│ │ └── DataPoint.tsx
-│ └── api/
-│ └── index.ts
-│
-└── README.md
 
 ---
 
