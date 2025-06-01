@@ -1,62 +1,36 @@
-import httpx
-from app.cache import get_cache, set_cache
+import requests
+from typing import Dict
 
-BASE_URL = "https://opendata.swiss/api/3/action/package_search"
+SWISS_GROUPS = ["tech", "intr", "gove", "educ"]
+BASE_URL = "https://ckan.opendata.swiss/api/3/action/package_search"
 
-# All groups you listed
-GROUPS = {
-    "tech": "https://opendata.swiss/en/group/tech",
-    "intr": "https://opendata.swiss/en/group/intr",
-    "gove": "https://opendata.swiss/en/group/gove",
-    "educ": "https://opendata.swiss/en/group/educ"
-}
-
-async def get_swiss_data():
-    cache_key = "swiss_data"
-    cached = get_cache(cache_key)
-    if cached:
-        return cached
-
+def get_swiss_data() -> Dict:
     try:
-        all_results = []
+        all_group_data = {}
+        headers = {"Accept": "application/json"}
 
-        async with httpx.AsyncClient() as client:
-            for group, group_url in GROUPS.items():
-                params = {
-                    "fq": f"group:{group}",
-                    "rows": 1,
-                    "sort": "metadata_modified desc"
-                }
-                response = await client.get(BASE_URL, params=params)
-                response.raise_for_status()
-                data = response.json()
+        for group in SWISS_GROUPS:
+            params = {
+                "fq": f"group:{group}",
+                "rows": 1,
+                "sort": "metadata_modified desc"
+            }
+            response = requests.get(BASE_URL, headers=headers, params=params, timeout=10)
+            response.raise_for_status()
 
-                if data.get("success") and data["result"]["results"]:
-                    dataset = data["result"]["results"][0]
-                    all_results.append({
-                        "title": dataset.get("title"),
-                        "notes": dataset.get("notes"),
-                        "group": group,
-                        "source": {
-                            "name": f"opendata.swiss | {group}",
-                            "url": group_url
-                        }
-                    })
+            data = response.json()
+            all_group_data[group] = data.get("result", {}).get("results", [{}])[0]
 
-        result = {
-            "value": all_results,
+        return {
+            "value": all_group_data,
             "source": {
-                "name": "opendata.swiss (tech, intr, gove, educ)",
+                "name": "opendata.swiss",
                 "url": "https://opendata.swiss/en"
             }
         }
-
-        set_cache(cache_key, result)
-        return result
-
     except Exception as e:
         return {
-            "value": f"Failed to fetch Swiss data: {e}",
+            "value": f"Failed to fetch Swiss data: {str(e)}",
             "source": {
                 "name": "opendata.swiss",
                 "url": "https://opendata.swiss/en"

@@ -1,7 +1,8 @@
 import httpx
 from app.cache import get_cache, set_cache
 
-BASE_URL = "https://www.imf.org/external/datamapper/api/v1"
+BASE_URL = "https://www.imf.org/external/datamapper/api/v1/GDP/CHE"
+
 
 # Example endpoint for GDP data by country
 INDICATOR = "NGDPD"  # Nominal GDP in USD
